@@ -1,0 +1,405 @@
+/* Design and implement C/C++ Program to obtain the Topological ordering of vertices in a given digraph. */
+
+#include <stdio.h>
+
+void find_indegree(int n, int a[20][20], int indegree[]) {
+    int i, j, sum;
+    for (j = 1; j <= n; j++) {
+        sum = 0;
+        for (i = 1; i <= n; i++) {
+            sum = sum + a[i][j];
+        }
+        indegree[j] = sum;
+    }
+}
+
+void topological(int n, int a[20][20]) {
+    int i, k, u, v, top, t[20], indegree[20], s[20];
+    
+    find_indegree(n, a, indegree);
+    
+    top = -1;
+    k = 1;
+    
+    for (i = 1; i <= n; i++) {
+        if (indegree[i] == 0) {
+            s[++top] = i;
+        }
+    }
+    
+    while (top != -1) {
+        u = s[top--];
+        t[k++] = u;
+        for (v = 1; v <= n; v++) {
+            if (a[u][v] == 1) {
+                indegree[v]--;
+                if (indegree[v] == 0) {
+                    s[++top] = v;
+                }
+            }
+        }
+    }
+    
+    printf("THE TOPOLOGICAL SEQUENCE IS \n");
+    for (i = 1; i <= n; i++) {
+        printf("%d\t", t[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    int i, j, n, a[20][20];
+    
+    printf("ENTER THE NUMBER OF NODES\n");
+    scanf("%d", &n);
+    
+    printf("ENTER THE ADJACENCY MATRIX\n");
+    for (i = 1; i <= n; i++) {
+        for (j = 1; j <= n; j++) {
+            scanf("%d", &a[i][j]);
+        }
+    }
+    
+    topological(n, a);
+    
+    return 0;
+}
+
+/* Programming method (Dynamic Programming Knapsack). */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int w[10], p[10], v[10][10];
+
+int Max(int a, int b) {
+    if (a > b) return a;
+    else return b;
+}
+
+int knapsack(int n, int c) {
+    int i, j;
+    for (i = 0; i <= n; i++) {
+        for (j = 0; j <= c; j++) {
+            if (i == 0 || j == 0) v[i][j] = 0;
+            else if (j - w[i] >= 0)
+                v[i][j] = Max(v[i - 1][j], p[i] + v[i - 1][j - w[i]]);
+            else
+                v[i][j] = v[i - 1][j];
+        }
+    }
+    return v[n][c];
+}
+
+void optimal_subset(int n, int c) {
+    int i, j;
+    for (i = n, j = c; i >= 1 && j > 0; j--) {
+        if (v[i][j] != v[i - 1][j]) {
+            printf("item %d\n", i);
+            j = j - w[i];
+        }
+    }
+}
+
+int main() {
+    int n, c, mp, i, j;
+    printf("enter the number of items \n");
+    scanf("%d", &n);
+    printf("enter the weights of each item\n");
+    for (i = 1; i <= n; i++) scanf("%d", &w[i]);
+    printf("enter the profit of each item\n");
+    for (i = 1; i <= n; i++) scanf("%d", &p[i]);
+    printf("enter the knapsack capacity\n");
+    scanf("%d", &c);
+    mp = knapsack(n, c);
+    printf("solution of the knapsack \n");
+    for (i = 0; i <= n; i++) {
+        for (j = 0; j <= c; j++) printf("%d\t", v[i][j]);
+        printf("\n");
+    }
+    printf("the maximal value is %d \n", mp);
+    printf("the items of optimal subset are\n");
+    optimal_subset(n, c);
+    return 0;
+}
+
+/* Design and implement C/C++ Program to solve discrete Knapsack problem using greedy approximation method. */
+
+#include <stdio.h>
+
+struct Item {
+    int weight;
+    int value;
+};
+
+void discreteKnapsack(struct Item items[], int n, int capacity) {
+    float ratios[n];
+    for (int i = 0; i < n; i++) {
+        ratios[i] = (float) items[i].value / items[i].weight;
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (ratios[i] < ratios[j]) {
+                float tempRatio = ratios[i];
+                ratios[i] = ratios[j];
+                ratios[j] = tempRatio;
+
+                struct Item tempItem = items[i];
+                items[i] = items[j];
+                items[j] = tempItem;
+            }
+        }
+    }
+
+    int totalWeight = 0;
+    float totalValue = 0.0;
+    printf("Items selected:\n");
+    for (int i = 0; i < n && totalWeight < capacity; i++) {
+        if (items[i].weight <= capacity - totalWeight) {
+            totalWeight += items[i].weight;
+            totalValue += items[i].value;
+            printf("Item with weight %d and value %d\n", items[i].weight, items[i].value);
+        } else {
+            int remainingWeight = capacity - totalWeight;
+            totalValue += items[i].value * ((float) remainingWeight / items[i].weight);
+            printf("Item with weight %d and value %d (fractional part)\n", items[i].weight, items[i].value);
+            break;
+        }
+    }
+    printf("Total value: %.2f\n", totalValue);
+}
+
+int main() {
+    struct Item items[] = {{10, 60}, {20, 100}, {30, 120}};
+    int n = sizeof(items) / sizeof(items[0]);
+    int capacity = 50;
+
+    discreteKnapsack(items, n, capacity);
+
+    return 0;
+}
+
+/* Design and implement C/C++ Program to solve continuous Knapsack problem using greedy approximation method. */
+
+#include <stdio.h>
+
+struct Item {
+    int weight;
+    int value;
+};
+
+void continuousKnapsack(struct Item items[], int n, int capacity) {
+    float ratios[n];
+    for (int i = 0; i < n; i++) {
+        ratios[i] = (float) items[i].value / items[i].weight;
+    }
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (ratios[i] < ratios[j]) {
+                float tempRatio = ratios[i];
+                ratios[i] = ratios[j];
+                ratios[j] = tempRatio;
+
+                struct Item tempItem = items[i];
+                items[i] = items[j];
+                items[j] = tempItem;
+            }
+        }
+    }
+
+    int totalWeight = 0;
+    float totalValue = 0.0;
+    printf("Items selected:\n");
+    for (int i = 0; i < n && totalWeight < capacity; i++) {
+        if (items[i].weight <= capacity - totalWeight) {
+            totalWeight += items[i].weight;
+            totalValue += items[i].value;
+            printf("Item with weight %d and value %d\n", items[i].weight, items[i].value);
+        } else {
+            int remainingWeight = capacity - totalWeight;
+            totalValue += items[i].value * ((float) remainingWeight / items[i].weight);
+            printf("Item with weight %d and value %d (fractional part)\n", items[i].weight, items[i].value);
+            break;
+        }
+    }
+    printf("Total value: %.2f\n", totalValue);
+}
+
+int main() {
+    struct Item items[] = {{10, 60}, {20, 100}, {30, 120}};
+    int n = sizeof(items) / sizeof(items[0]);
+    int capacity = 50;
+
+    continuousKnapsack(items, n, capacity);
+
+    return 0;
+}
+
+ Selection Sort method 
+
+#include <stdio.h>
+#include <time.h>
+
+void selsort(int a[], int n) {
+    int i, j, small, pos, temp;
+    for (j = 0; j < n - 1; j++) {
+        small = a[j];
+        pos = j;
+        for (i = j + 1; i < n; i++) {
+            if (a[i] < small) {
+                small = a[i];
+                pos = i;
+            }
+        }
+        temp = a[j];
+        a[j] = small;
+        a[pos] = temp;
+    }
+}
+
+int main() {
+    int a[10000], i, n;
+    struct timespec start, end;
+    double dura;
+    printf("\nEnter the n value:");
+    scanf("%d", &n);
+    printf("\nEnter the array:");
+    for (i = 0; i < n; i++)
+        scanf("%d", &a[i]);
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    selsort(a, n);
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    dura = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+    printf("\nTime taken is: %lf seconds", dura);
+    printf("\nSorted array is:");
+    for (i = 0; i < n; i++)
+        printf("%d  ", a[i]);
+    return 0;
+}
+
+/ using Quick Sort method 
+
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define maxsize 10000
+
+int partition(int a[], int l, int h) {
+    int i, j, k, t;
+    k = a[l];
+    i = l + 1;
+    j = h;
+    while (1) {
+        while (l < h && k >= a[i] && i <= h) i++;
+        while (k < a[j]) j--;
+        if (i < j) {
+            t = a[i];
+            a[i] = a[j];
+            a[j] = t;
+        } else {
+            t = a[l];
+            a[l] = a[j];
+            a[j] = t;
+            return j;
+        }
+    }
+}
+
+void quicksort(int a[], int l, int h) {
+    int j;
+    if (l < h) {
+        usleep(500000);
+        j = partition(a, l, h);
+        quicksort(a, l, j - 1);
+        quicksort(a, j + 1, h);
+    }
+}
+
+int main() {
+    int a[maxsize], i, n;
+    double runtime = 0;
+    printf("Enter the size \n");
+    scanf("%d", &n);
+    srand(1);
+    for (i = 1; i <= n; i++)
+        a[i] = rand() % 100;
+    time_t start = time(NULL);
+    quicksort(a, 1, n);
+    time_t end = time(NULL);
+    runtime = difftime(end, start);
+    printf("The sorted array is");
+    for (i = 1; i <= n; i++)
+        printf("\n%d", a[i]);
+    printf("\nTime taken %f\n", runtime);
+    return 0;
+}
+
+ Merge Sort method 
+
+#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#define maxsize 10000
+
+void merge(int a[], int low, int mid, int high) {
+    int i, j, k;
+    int b[maxsize];
+    i = k = low;
+    j = mid + 1;
+    while (i <= mid && j <= high) {
+        if (a[i] <= a[j]) {
+            b[k++] = a[i++];
+        } else {
+            b[k++] = a[j++];
+        }
+    }
+    while (i <= mid) {
+        b[k++] = a[i++];
+    }
+    while (j <= high) {
+        b[k++] = a[j++];
+    }
+    for (i = low; i <= high; i++)
+        a[i] = b[i];
+}
+
+void mergesort(int a[], int low, int high) {
+    int mid;
+    if (low < high) {
+        usleep(500000);
+        mid = (low + high) / 2;
+        mergesort(a, low, mid);
+        mergesort(a, mid + 1, high);
+        merge(a, low, mid, high);
+    }
+}
+
+int main() {
+    int a[maxsize], i, n;
+    double runtime = 0;
+    printf("Enter the number of elements to sort\n");
+    scanf("%d", &n);
+    srand(1);
+    for (i = 0; i < n; i++)
+        a[i] = rand() % 100;
+    printf("The randomly generated numbers are:\n");
+    for (i = 0; i < n; i++)
+        printf("%d\n", a[i]);
+    
+    time_t start = time(NULL);
+    mergesort(a, 0, n - 1);
+    time_t end = time(NULL);
+    runtime = difftime(end, start);
+    
+    printf("The sorted elements are :\n");
+    for (i = 0; i < n; i++)
+        printf("%d\n", a[i]);
+    printf("Time taken to sort=%f\n", runtime);
+    return 0;
+}
