@@ -1,3 +1,56 @@
+2
+
+\documentclass[10pt,a4paper]{article} 
+\usepackage[utf8]{inputenc} 
+\usepackage{amsmath} 
+\usepackage{amsfonts} 
+\usepackage{amssymb} 
+\usepackage[left=3cm,right=3cm,top=2cm,bottom=2cm]{geometry} 
+%\usepackage{lipsum} 
+\begin{document} 
+\thispagestyle{plain} 
+\begin{center} 
+ \Large 
+ \textbf{A Review on Artificial Intelligence for Healthcare} 
+ 
+ \vspace{0.4cm} 
+ \large 
+ XAI 
+ 
+ 
+ \vspace{0.9cm} 
+ \textbf{Abstract} 
+\end{center} 
+%\lipsum[1] 
+Artificial Intelligence models are increasingly finding applications in the field of medicine. 
+Concerns have been raised about the explainability of the decisions that are made by these 
+AI models.In this article ,we have a systematic analysis of explainable artificial 
+intelligence(XAI),with a primary focus on models that are currently being used in the field of 
+health care.The literature search is conducted following the preferred reporting items for 
+systematic reviews and meta-analyses standards for relevant work published from first 
+January 2012 to second February 2022.The review analyses the prevailing trends in XAI and 
+lays out the major directions in which research is headed.We investigate the why,how and 
+when of the uses of these XAI models and their implications.We present a comprehensive 
+examination of XAI methodologies as well as an explanation of how a trustworthy AI can be 
+derived from describing AI models for health care fields.The discussion of the work will 
+contribute to the formalization of the XAI field.\\ 
+XAI is emerging in various sectors and the literature has recognized numerous concerns and 
+problems.Security ,performance,vocabulary,evaluation of explanation and generalization of 
+XAI in the field of health care are the most significant problem recognized and discussed in 
+the literature.The paper has identified a number of obstacles associated with XAI in the field 
+of health care area including system evaluation,organizational,legal,socio-relational and 
+communication issues.Although a few studies in the literature have proposed some answers 
+for the stated problems,others have characterized it as a future gap that must be filled.In 
+health care,the organizational difficulty posed by XAI can be mitigated via AI deployment 
+management plans.\\ 
+This paper contributes to the body of knowledge in identifying different techniques for XAI 
+in determining the issues and difficulties associated with XAI and finally in reviewing XAI in 
+health care.\\ 
+\textbf{Keywords:} 
+XAI,AI,Security,health care 
+\end{document} 
+
+
 \documentclass[11pt,a4paper]{article} 
 \usepackage{graphicx} 
 \usepackage{tikz} 
@@ -501,4 +554,4 @@ scaling, and flipping the original data, new pictures may be created while maint
 same label; this is known as data augmentation\cite{rodriguez2019stand} 
 \bibliographystyle{IEEEtran} 
 \bibliography{ref}
-\end{document} 
+\end{document} 
